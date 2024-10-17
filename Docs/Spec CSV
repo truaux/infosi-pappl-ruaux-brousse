@@ -1,0 +1,12 @@
+Specification du traitement des fichiers CSV
+
+entree : fichier CSV avec 4 colonnes (temps, deplacement, deformation, force)
+
+sortie : un ou plusieurs objets pyton contenant les donnees 
+
+lecture des fichiers :
+    - dans un premier temps, les fichiers doivent être placés dans un dossier particulier
+    - possibilites d'amelioration avec une option d'importation de fichier
+
+Pour manipuler ces donnees numeriques, on utilisera la bibliotheque NumPy.
+
