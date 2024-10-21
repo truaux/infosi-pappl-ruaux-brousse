@@ -5,8 +5,25 @@ entree : fichier CSV avec 4 colonnes (temps, deplacement, deformation, force)
 sortie : un ou plusieurs objets pyton contenant les donnees 
 
 lecture des fichiers :
-    - dans un premier temps, les fichiers doivent être placés dans un dossier particulier
+    - dans un premier temps, les fichiers doivent etre passes en paramètre
+    - ensuite ils devront être placés dans un dossier particulier
     - possibilites d'amelioration avec une option d'importation de fichier
 
 Pour manipuler ces donnees numeriques, on utilisera la bibliotheque NumPy.
+
+Si fichier non trouve, est renvoyee l'erreur : "Fichier non trouve, verifiez son nom et/ou sa localisation."
+
+Si mauvaise extension de fichier, est renvoyee l'erreur : "Seuls les fichiers csv sont supportes."
+
+Le tableau CSV doit etre de la forme :
+
+grandeur1;grandeur2;...;grandeurN
+unite1;unite2;...;uniteN
+donnee1.1;donnee2.1;...;donneeN.1
+...
+donneeM.1;donneeM.2;...;donneeN.M 
+
+On ne donne de limite ni a N ni a M. En pratique, on traitera des fichiers CSV avec N = 4.
+La structure de donnees choisie en sortie doit permettre de faire le lien entre la grandeur physique, son unite et les donnees digitales
+correspondantes.
 
