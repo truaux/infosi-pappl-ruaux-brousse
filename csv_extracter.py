@@ -27,8 +27,8 @@ def readFile(path: str) -> list[list]:
     
     return content
 
-# J'ai choisi un dictionnaire, mais on pourrait aussi prendre une liste de liste (la 'transposee' de celle en entree)
-# ou chaque liste est de la forme ['grandeur', 'unite', donnee1, donnee2,...]
+# J'ai choisi un dictionnaire, mais on pourrait aussi prendre une liste de tuples (la 'transposee' de celle en entree)
+# ou chaque tuple est de la forme ('grandeur', 'unite', [donnee1, donnee2,...])
 def listToDict(lst: list[list]) -> dict[(str, np.array)]:
     """Let n be the length of lst. Creates n array containing each time the i-th element of lists in lst (except the first 2).
     Values of the first list in lst are used as dictionnary keys and are associated with the couple (value of the second list, array).
@@ -44,7 +44,7 @@ def listToDict(lst: list[list]) -> dict[(str, np.array)]:
     -------
 
     dic :
-        Dictionnary where keys are values of the firs list in lst, and values are the couples (unit of measurment, list of datas).
+        Dictionnary where keys are values of the first list in lst, and values are the couples (unit of measurment, list of datas).
     """
 
     dic = {}
