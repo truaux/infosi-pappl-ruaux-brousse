@@ -6,32 +6,18 @@ import numpy as np
 DELIMITER = ";" # Delimiter in the csv file
 
 
-class WrongFileExtensionError(Error):
-    """Exception raised for error in the extension of a file.
-
-    Attributes
-    ----------
-    
-    file : name of the file whose extension is not supported
-    message : explanation of the error
-    """
-
-    def _init_(self, file, message):
-        self.file = file
-        self.message = message
-
-def readFile(path: str) -> list[list]:
-    """Extracts the content of the file and returns it in a list of lists.
+def readCSVFile(path: str) -> list[list]:
+    """Extracts the content of the csv file and returns it in a list of lists.
     
     Parameters
     ----------
 
-    path : The file path.
+    path : The csv file path.
         
     Returns
     -------
     
-    content : The content of the file
+    content : The content of the csv file
     """
 
     try:
@@ -42,9 +28,12 @@ def readFile(path: str) -> list[list]:
         content = [[]]
     else:
         if not path[-4:] == ".csv":
-            print("Wrong")
-        content = list(reader) # cout de cette operation, et impacte pour un grand nombre de donnees ?
-        content = content[:-1] # The last element is an empty list, we remove it
+            extension = path.split(".")[-1]
+            print("WrongFileExtensionError : the selected file is a " + extension + ". Only csv file are supported.")
+            content = [[]]
+        else :
+            content = list(reader) # cout de cette operation, et impacte pour un grand nombre de donnees ?
+            content = content[:-1] # The last element is an empty list, we remove it
         
 
     return content
@@ -84,6 +73,3 @@ def listToDict(lst: list[list]) -> dict[(str, np.array)]:
         dic[key] = (unit, tab)
     
     return dic
-
-
-print(readFile("2-SS2209.csv"))
