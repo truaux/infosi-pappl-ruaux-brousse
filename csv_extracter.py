@@ -1,4 +1,10 @@
-# This module extracts data from a csv file to return it in table form
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Oct 17 10:32:27 2024
+This module extracts data from a csv file to return it in table form
+
+@author: thomas
+"""
 
 import csv # Python lybrary for csv files
 import numpy as np
@@ -27,7 +33,7 @@ def readCSVFile(path: str) -> list[list]:
         print("FileNotFoundError : can't find the file " + path + ". Please check the name or the location.")
         content = [[]]
     else:
-        if not path[-4:] == ".csv":
+        if not path[-4:] == ".csv": # checking that the selected file is a csv file
             extension = path.split(".")[-1]
             print("WrongFileExtensionError : the selected file is a " + extension + ". Only csv file are supported.")
             content = [[]]
