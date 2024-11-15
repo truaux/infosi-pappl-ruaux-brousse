@@ -30,6 +30,7 @@ def inputSize(measure: str) -> float:
     else:
         return measurement
 
+
 length = inputSize("length")
 width = inputSize("width")
 thickness = inputSize("thickness")

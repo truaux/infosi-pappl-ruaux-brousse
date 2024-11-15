@@ -1,0 +1,18 @@
+Specification du traitement des donnes par le calculateur
+
+entree : 
+    - objet contenant les donnes numeriques extraites du fichier CSV
+
+sortie : 
+    - Limite apparente d'élasticité
+    - Résistance à la rupture
+    - Allongement
+    - Coefficient de striction
+    - Module d'élasticité longitudinale
+    - Module d'Young
+
+Saisie des dimensions de l'echantillon par l'utilisateur :
+    - On a besoin de la longueur, de l'epaisseur et de la largeur de l'echantillon, en mm.
+    - Verifier que la saisie est bien un flottant, en cas d'erreur redemander la saisie jusqu'a ce qu'elle corresponde.
+    
+
