@@ -12,10 +12,6 @@ def click():
     path_csv = path_csv_e.get()
     content = csvex.readCSVFile(path_csv)
     
-
-
-
-
 #def window
 window = tk.Tk()
 window.title("Traction Analyser")
