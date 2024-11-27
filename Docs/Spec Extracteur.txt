@@ -15,15 +15,5 @@ Si fichier non trouve, est renvoyee l'erreur : "Fichier non trouve, verifiez son
 
 Si mauvaise extension de fichier, est renvoyee l'erreur : "Seuls les fichiers csv sont supportes."
 
-Le tableau CSV doit etre de la forme :
-
-grandeur1;grandeur2;...;grandeurN
-unite1;unite2;...;uniteN
-donnee1.1;donnee2.1;...;donneeN.1
-...
-donneeM.1;donneeM.2;...;donneeN.M 
-
-On ne donne de limite ni a N ni a M. En pratique, on traitera des fichiers CSV avec N = 4.
-La structure de donnees choisie en sortie doit permettre de faire le lien entre la grandeur physique, son unite et les donnees digitales
-correspondantes.
+On utilisera le module pandas et son objet DataFrame pour contenir les donnes du fichier csv.
 
