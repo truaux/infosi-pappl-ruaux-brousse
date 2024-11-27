@@ -6,6 +6,8 @@ This module calculates physical quantities based on datas
 @author: thomas
 """
 
+import csv_extracter as csve
+
 
 def inputSize(measure: str) -> float:
     """Returns the value entered by the user for the requested measurement.
@@ -34,4 +36,5 @@ def inputSize(measure: str) -> float:
 length = inputSize("length")
 width = inputSize("width")
 thickness = inputSize("thickness")
+
 
