@@ -8,5 +8,7 @@ This module calculates physical quantities based on datas
 
 import pandas as pd
 
-def strainCalcul(table: pd.DataFrame, longueur: float) :
-    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/longueur
+def Calcul(table: pd.DataFrame, length: float, width: float, thickness: float) :
+    table["Strain"] = (table[1] - table[1][0])/longueur
+    table["Stress"] = table[3]/(width * thickness)
+    
