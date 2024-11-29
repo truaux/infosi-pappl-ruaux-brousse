@@ -5,7 +5,6 @@ import csv_extracter as csvex
 
 def click():
     """When click on the button, uses the values entered by the user to calculate and display the curves"""
-
     s_thick = s_thick_e.get()
     s_lenght = s_length_e.get()
     s_width = s_width_e.get()
