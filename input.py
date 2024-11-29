@@ -80,4 +80,7 @@ def test():
     print(readCSV("2-SS2209_1.pdf"))
     print(readCSV("2-SS09_1.csv"))
     print(readCSV("2-SS2209_1.csv", ";"))
+    print(inputSize("length"))
+    print(inputSize("width"))
+    print(inputSize("thickness"))
 
