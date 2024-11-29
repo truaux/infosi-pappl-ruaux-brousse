@@ -9,21 +9,12 @@ lecture des fichiers :
     - ensuite ils devront être placés dans un dossier particulier
     - possibilites d'amelioration avec une option d'importation de fichier
 
-Pour manipuler ces donnees numeriques, on utilisera la bibliotheque NumPy.
+Pour manipuler ces donnees numeriques, on utilisera la bibliotheque NumPy, ainsi que le module pandas et son objet DataFrame 
+pour contenir les donnees du fichier csv.
 
 Si fichier non trouve, est renvoyee l'erreur : "Fichier non trouve, verifiez son nom et/ou sa localisation."
-
 Si mauvaise extension de fichier, est renvoyee l'erreur : "Seuls les fichiers csv sont supportes."
 
-Le tableau CSV doit etre de la forme :
-
-grandeur1;grandeur2;...;grandeurN
-unite1;unite2;...;uniteN
-donnee1.1;donnee2.1;...;donneeN.1
-...
-donneeM.1;donneeM.2;...;donneeN.M 
-
-On ne donne de limite ni a N ni a M. En pratique, on traitera des fichiers CSV avec N = 4.
-La structure de donnees choisie en sortie doit permettre de faire le lien entre la grandeur physique, son unite et les donnees digitales
-correspondantes.
-
+Saisie des dimensions de l'echantillon par l'utilisateur :
+    - On a besoin de la longueur, de l'epaisseur et de la largeur de l'echantillon, en mm.
+    - Verifier que la saisie est bien un flottant, en cas d'erreur redemander la saisie jusqu'a ce qu'elle corresponde.

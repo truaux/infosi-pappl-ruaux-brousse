@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov 22 10:15:28 2024
+This module displays graphs and datas
+
+@author: titouan
+"""
+
 import tkinter as tk
 from tkinter import messagebox
 import calculateur as calc
