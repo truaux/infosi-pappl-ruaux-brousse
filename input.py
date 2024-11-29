@@ -9,6 +9,8 @@ This module extracts data from a csv file to return it in a dataframework
 import pandas as pd
 import os
 import chardet
+import unidecode as undc
+from io import StringIO
 
 
 def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
@@ -33,20 +35,18 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
         content = pd.DataFrame()
     else :
         try:
-            content = pd.read_csv(path, sep=delimiter)
+            with open(path) as file:
+                text = file.read()
+                text = undc.unidecode(text) # Remove accents
+                content = pd.read_csv(StringIO(text), sep=delimiter)
         except FileNotFoundError:
             print("File not found : can't find the file " + path + ". Please check the name or the location.")
             content = pd.DataFrame()
         except UnicodeDecodeError:
-            with open(path) as file:
-                text = file.read()
-                encoding = chardet.detect(text)
-                content = pd.read_csv(path, sep=delimiter, encoding=encoding)
+            content = pd.read_csv(path, sep=delimiter, encoding='iso-8859-1')
         except pd.errors.ParserError:
             print("Parsing error : can't parse the file with the indicated delimiter '" + delimiter +"'. Please choose an other delimiter.")
             content = pd.DataFrame()
-        finally:
-            print(content)
 
     return content
 
@@ -73,4 +73,11 @@ def inputSize(measure: str) -> float:
         inputSize(measure)
     else:
         return measurement
+
+
+def test():
+    print(readCSV("2-SS2209_1.csv"))
+    print(readCSV("2-SS2209_1.pdf"))
+    print(readCSV("2-SS09_1.csv"))
+    print(readCSV("2-SS2209_1.csv", ";"))
 
