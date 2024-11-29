@@ -56,8 +56,8 @@ def click():
     if content is not None:
         Time = content["Temps"]
         Displacement = content["Deplacement"]
-        Deformation = content.iloc["Deformation"]
-        Strength = content.iloc["Force"]
+        Deformation = content["Deformation"]
+        Strength = content["Force"]
         fig, ax = plt.subplots(figsize=(4, 3))
         ax.plot(Time, Displacement)
         ax.set_title("Dynamic Plot from CSV")
