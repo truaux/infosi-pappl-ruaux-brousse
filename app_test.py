@@ -9,113 +9,86 @@ This module displays graphs and datas
 import tkinter as tk
 from tkinter import messagebox
 import calculateur as calc
-import csv_extracter as csvex
+import input as ip
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+import numpy as np
+
+def draw_figure(canvas, figure, loc=(0, 0)):
+    """ Draw a matplotlib figure onto a Tk canvas using FigureCanvasTkAgg """
+    figure_canvas = FigureCanvasTkAgg(figure, master=canvas)
+    widget = figure_canvas.get_tk_widget()
+    widget.place(x=loc[0], y=loc[1])
+    figure_canvas.draw()
+
+def click_test():
+    # Création d'un graphique simple
+    X = np.linspace(0, 2 * np.pi, 50)
+    Y = np.sin(X)
+    fig, ax = plt.subplots(figsize=(4, 3))
+    ax.plot(X, Y)
+    ax.set_title("Test Sinusoïde")
+
+    # Création d'un canvas
+    fig_width, fig_height = fig.get_size_inches()
+    canvas_width, canvas_height = fig_width * 100, fig_height * 100
+    canvas = tk.Canvas(window, width=canvas_width, height=canvas_height)
+    draw_figure(canvas, fig)
 
 def click():
-    """When click on the button, uses the values entered by the user to calculate and display the curves"""
-    s_thick = s_thick_e.get()
-    s_lenght = s_length_e.get()
-    s_width = s_width_e.get()
+    try:
+        s_thick = float(s_thick_e.get())
+        s_length = float(s_length_e.get())
+        s_width = float(s_width_e.get())
+    except ValueError:
+        messagebox.showerror("Input Error", "Please enter valid numerical values.")
+        return
+
     path_csv = path_csv_e.get()
-    content = csvex.readCSVFile(path_csv)
+
+    content = ip.readCSV(path_csv, delimiter=";")
+
+    # Create a canvas in the Tkinter window
+    canvas = tk.Canvas(window, width=400, height=300)
+    canvas.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
+
+    # Create the figure to be drawn on the canvas
+    if content is not None:
+        Time = content["Temps"]
+        Displacement = content["Deplacement"]
+        Deformation = content.iloc["Deformation"]
+        Strength = content.iloc["Force"]
+        fig, ax = plt.subplots(figsize=(4, 3))
+        ax.plot(Time, Displacement)
+        ax.set_title("Dynamic Plot from CSV")
+        ax.set_xlabel("Time (in s)")
+        ax.set_ylabel("Displacement (in mm)")
+        draw_figure(canvas, fig)
     
 #def window
 window = tk.Tk()
 window.title("Traction Analyser")
-window.geometry("400x400")
+window.geometry("450x600")
 
-#entry of the value of the sample thickness
-#def label
-s_thick_l = tk.Label(window, text = "Sample thickness",
-fg="black",
-font=("Arial", 9),
-width=20)
-s_thick_l.pack()
+# Labels and Entry widgets
+fields = [("Sample Thickness", "s_thick_e"), 
+          ("Sample Length", "s_length_e"), 
+          ("Sample Width", "s_width_e"), 
+          ("Path to CSV File", "path_csv_e")]
 
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
+entries = {}
 
-#def entry
-s_thick_e = tk.Entry(window,
-width=25)
-s_thick_e.pack()
+for i, (label_text, var_name) in enumerate(fields):
+    label = tk.Label(window, text=label_text, font=("Arial", 9))
+    label.grid(row=i, column=0, padx=5, pady=5)
+    entry = tk.Entry(window, width=25)
+    entry.grid(row=i, column=1, padx=5, pady=5)
+    entries[var_name] = entry
 
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
+s_thick_e, s_length_e, s_width_e, path_csv_e = [entries[key] for key in entries]
 
-#entry of the value of the sample length
-#def label
-s_length_l = tk.Label(window, text = "Sample length",
-fg="black",
-font=("Arial", 9),
-width=20)
-s_length_l.pack()
-
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
-
-#def entry
-s_length_e = tk.Entry(window,
-width=25)
-s_length_e.pack()
-
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
-
-#entry of the value of the sample width
-#def label
-s_width_l = tk.Label(window, text = "Sample width",
-fg="black",
-font=("Arial", 9),
-width=20)
-s_width_l.pack()
-
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
-
-#def entry
-s_width_e = tk.Entry(window,
-width=25)
-s_width_e.pack()
-
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
-
-#entry of the value of path to the csv file
-#def label
-path_csv_l = tk.Label(window, text = "Path to .csv file",
-fg="black",
-font=("Arial", 9),
-width=20)
-path_csv_l.pack()
-
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
-
-#def entry
-path_csv_e = tk.Entry(window,
-width=25)
-path_csv_e.pack()
-
-#def frame
-frame = tk.Frame(window, width=400, height=5)
-frame.pack()
-
-#def button
-button = tk.Button(window,
-text="Entry values and file",
-width=25,
-height=2,
-bg="red",
-fg="white",
-command=click)
-button.pack()
+# Button to trigger plot
+button1 = tk.Button(window, text="Plot Data", command=click, bg="red", fg="white")
+button1.grid(row=4, column=0, columnspan=2, pady=10)
 
 window.mainloop()
