@@ -26,7 +26,7 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
     Returns
     -------
     
-    content : DataFrame containing datas from the csv file
+    content : DataFrame containing datas from the csv file.
     """
 
     extension = os.path.splitext(path)[1]
@@ -35,7 +35,7 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
         content = pd.DataFrame()
     else :
         try:
-            with open(path) as file:
+            with open(path) as file:                
                 text = file.read()
                 text = undc.unidecode(text) # Remove accents
                 content = pd.read_csv(StringIO(text), sep=delimiter)
@@ -49,6 +49,30 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
             content = pd.DataFrame()
 
     return content
+
+
+def extractUnits(table: pd.DataFrame) -> (pd.DataFrame, list[(str, str)]):
+    """Extracts units from a DataFrame in a list of couples (quantity, unit).
+
+    Parameters
+    ----------
+
+    table : The DataFrame containing datas.
+
+    Returns
+    -------
+
+    table : The DataFrame without its first row.
+
+    units : The list containing couples (quantity, unit).
+    """
+
+    units = []
+    for column in table:
+        units.append((column, table[column][0]))
+    table = table.drop(table.index[[0]])
+    
+    return table, units
 
 
 def inputSize(measure: str) -> float:
@@ -79,8 +103,10 @@ def test():
     print(readCSV("2-SS2209_1.csv"))
     print(readCSV("2-SS2209_1.pdf"))
     print(readCSV("2-SS09_1.csv"))
-    print(readCSV("2-SS2209_1.csv", ";"))
+    df = readCSV("2-SS2209_1.csv", ";")
+    print(df)
     print(inputSize("length"))
     print(inputSize("width"))
     print(inputSize("thickness"))
+    print(extractUnits(df))
 
