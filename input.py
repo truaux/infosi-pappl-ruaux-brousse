@@ -51,6 +51,29 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
     return content
 
 
+def dfToFloat(table: pd.DataFrame):
+    """Convert integer values of table in float type.
+
+    Parameters
+    ----------
+
+    table : DataFrame containing datas.
+    """
+    
+    for column in table:
+        for i in range(1, len(table[column])+1):
+            value = table[column][i]
+            try:
+                value = value.replace(",", ".")
+                value = float(value)
+            except ValueError:
+                print("Some values aren't float.")
+                print(value)
+                stop
+            finally :
+                table.loc[i, column] = value
+
+
 def extractUnits(table: pd.DataFrame) -> (pd.DataFrame, list[(str, str)]):
     """Extracts units from a DataFrame in a list of couples (quantity, unit).
 
@@ -108,5 +131,4 @@ def test():
     print(inputSize("length"))
     print(inputSize("width"))
     print(inputSize("thickness"))
-    print(extractUnits(df))
 
