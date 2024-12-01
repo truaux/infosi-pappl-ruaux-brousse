@@ -19,7 +19,7 @@ def draw_figure(canvas, figure, loc=(0, 0)):
     """ Draw a matplotlib figure onto a Tk canvas using FigureCanvasTkAgg """
     figure_canvas = FigureCanvasTkAgg(figure, master=canvas)
     widget = figure_canvas.get_tk_widget()
-    widget.place(x=loc[0], y=loc[1])
+    widget.grid(row = loc[0], column = loc[1])
     figure_canvas.draw()
 
 def click_test():
@@ -56,28 +56,45 @@ def click():
     canvas = tk.Canvas(window, width=400, height=300)
     canvas.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
-    # Create the figure to be drawn on the canvas
+    # Create the figures to be drawn on the canvas
     if content is not None:
         Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
         Displacement = pd.to_numeric(readable_content["Deplacement"], errors="coerce")
         Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
         Strength = pd.to_numeric(readable_content["Force"], errors="coerce")
-        fig, ax = plt.subplots(figsize=(4, 3))
-        ax.plot(Time, Displacement, label="Force vs Temps", color='blue')
 
-        # Ajouter des titres et légendes
-        ax.set_title("Force en fonction du Temps")
-        ax.set_xlabel("Temps (s)")
-        ax.set_ylabel("Force (kN)")
-        ax.grid(True)
+        # Graph of the displacement
+        fig, ax = plt.subplots(dpi=62, constrained_layout=True)
+        ax.plot(Time, Displacement, label="Displacement vs Time", color='blue')
+        plt.ylabel("Displacement (mm)")
+        plt.xlabel("Time (s)")
+        plt.title("Displacement of the sample")
         ax.legend()
 
-        # Ajuster l'échelle des axes
-        """ax.set_xlim(min(Time), max(Time))
-        ax.set_ylim(min(Displacement), max(Displacement))"""
+        # Show the graph in the window
+        draw_figure(canvas, fig, (7, 0))
 
-        # Afficher la figures
-        draw_figure(canvas, fig)
+        # Graph of the deformation
+        fig, ax = plt.subplots(dpi=62, constrained_layout=True)
+        ax.plot(Time, Deformation, label="Deformation vs Time", color='blue')
+        plt.ylabel("Deformation (%)")
+        plt.xlabel("Time (s)")
+        plt.title("Deformation of the sample")
+        ax.legend()
+
+        # Show the graph in the window
+        draw_figure(canvas, fig, (7, 1))
+
+        # Graph of the strength
+        fig, ax = plt.subplots(dpi=62, constrained_layout=True)
+        ax.plot(Time, Strength, label="Strength vs Time", color='blue')
+        plt.ylabel("Strength (kN)")
+        plt.xlabel("Time (s)")
+        plt.title("Strength applied on the sample")
+        ax.legend()
+
+        # Show the graph in the window
+        draw_figure(canvas, fig, (7,2))
     
 #def window
 window = tk.Tk()
