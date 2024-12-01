@@ -10,13 +10,29 @@ import pandas as pd
 import numpy as np
 import input as ipt
 
-def derivee(y, x):
+def derivee(y: list[float], x: list[float]) -> list[float]:
+    """Calculates the derivative of points of y with respect to x.
+
+    Parameters
+    ----------
+
+    y : List of points to derive.
+
+    x : List of points relative to which the derivative is calculated.
+
+    Returns
+    -------
+
+    d : List of derived points.
+    """ 
+
     d = []
     for i in range(0, len(y)-1):
         dy = y[i+1]-y[i]
         dx = x[i+1]-x[i]
         d.append(dy/dx)
     d.append(0)
+
     return d
 
 
