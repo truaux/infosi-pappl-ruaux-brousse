@@ -15,8 +15,8 @@ def Calcul(table: pd.DataFrame, length: float, width: float, thickness: float) :
     maxStress = table["Stress"].max()
 
 
-df = ipt.readCSV("2-SS2209_1.csv", ';')
+"""df = ipt.readCSV("2-SS2209_1.csv", ';')
 print(df)
 print(df.dtypes)
 Calcul(df, 38.4, 4, 6)
-print(df)
+print(df)"""

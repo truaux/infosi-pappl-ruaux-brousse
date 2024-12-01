@@ -9,10 +9,11 @@ This module displays graphs and datas
 import tkinter as tk
 from tkinter import messagebox
 import calculateur as calc
-import input as ip
+import input as ipt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 def draw_figure(canvas, figure, loc=(0, 0)):
     """ Draw a matplotlib figure onto a Tk canvas using FigureCanvasTkAgg """
@@ -36,6 +37,8 @@ def click_test():
     draw_figure(canvas, fig)
 
 def click():
+
+    #Extract the data entered by the user
     try:
         s_thick = float(s_thick_e.get())
         s_length = float(s_length_e.get())
@@ -46,7 +49,8 @@ def click():
 
     path_csv = path_csv_e.get()
 
-    content = ip.readCSV(path_csv, delimiter=";")
+    content = ipt.readCSV(path_csv, delimiter=";")
+    (readable_content, units) = ipt.extractUnits(content)
 
     # Create a canvas in the Tkinter window
     canvas = tk.Canvas(window, width=400, height=300)
@@ -54,15 +58,25 @@ def click():
 
     # Create the figure to be drawn on the canvas
     if content is not None:
-        Time = content["Temps"]
-        Displacement = content["Deplacement"]
-        Deformation = content["Deformation"]
-        Strength = content["Force"]
+        Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
+        Displacement = pd.to_numeric(readable_content["Deplacement"], errors="coerce")
+        Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
+        Strength = pd.to_numeric(readable_content["Force"], errors="coerce")
         fig, ax = plt.subplots(figsize=(4, 3))
-        ax.plot(Time, Displacement)
-        ax.set_title("Dynamic Plot from CSV")
-        ax.set_xlabel("Time (in s)")
-        ax.set_ylabel("Displacement (in mm)")
+        ax.plot(Time, Displacement, label="Force vs Temps", color='blue')
+
+        # Ajouter des titres et légendes
+        ax.set_title("Force en fonction du Temps")
+        ax.set_xlabel("Temps (s)")
+        ax.set_ylabel("Force (kN)")
+        ax.grid(True)
+        ax.legend()
+
+        # Ajuster l'échelle des axes
+        """ax.set_xlim(min(Time), max(Time))
+        ax.set_ylim(min(Displacement), max(Displacement))"""
+
+        # Afficher la figures
         draw_figure(canvas, fig)
     
 #def window

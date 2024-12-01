@@ -73,3 +73,5 @@ ax.plot(time, forcekN)
 plt.ylabel("Force (kN)")
 plt.xlabel("Temps (s)")
 plt.title("Force appliquée sur l'echantillon en fonction du temps")
+
+plt.show()
