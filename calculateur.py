@@ -10,13 +10,17 @@ import pandas as pd
 import input as ipt
 
 def Calcul(table: pd.DataFrame, length: float, width: float, thickness: float) :
-    table["Strain"] = (table["Deplacement"] - table["Deplacement"][2])/longueur
+    table["Strain"] = (table["Deplacement"] - table["Deplacement"][1])/length
     table["Stress"] = table["Force"]/(width * thickness)
     maxStress = table["Stress"].max()
 
+    return maxStress
+
 
 df = ipt.readCSV("2-SS2209_1.csv", ';')
-print(df)
-print(df.dtypes)
-Calcul(df, 38.4, 4, 6)
-print(df)
+df, units = ipt.extractUnits(df)
+print(df, units)
+ipt.dfToFloat(df)
+print(df, df.dtypes)
+mxS = Calcul(df, 38.4, 4, 6)
+print(df, mxS)
