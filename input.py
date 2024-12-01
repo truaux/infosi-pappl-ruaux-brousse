@@ -51,17 +51,22 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
     return content
 
 
-def dfToFloat(table: pd.DataFrame):
+def dfToFloat(table: pd.DataFrame) -> pd.DataFrame:
     """Convert integer values of table in float type.
 
     Parameters
     ----------
 
     table : DataFrame containing datas.
+
+    Returns
+    -------
+
+    table : DataFrame containing floats datas.
     """
     
     for column in table:
-        for i in range(1, len(table[column])+1):
+        for i in range(0, len(table[column])):
             value = table[column][i]
             try:
                 value = value.replace(",", ".")
@@ -72,6 +77,8 @@ def dfToFloat(table: pd.DataFrame):
                 stop
             finally :
                 table.loc[i, column] = value
+    table = table.astype(float)
+    return table
 
 
 def extractUnits(table: pd.DataFrame) -> (pd.DataFrame, list[(str, str)]):
@@ -94,17 +101,20 @@ def extractUnits(table: pd.DataFrame) -> (pd.DataFrame, list[(str, str)]):
     for column in table:
         units.append((column, table[column][0]))
     table = table.drop(table.index[[0]])
+    table = table.reset_index(drop=True)
     
     return table, units
 
 
-def inputSize(measure: str) -> float:
-    """Returns the value entered by the user for the requested measurement.
+def inputSize(measure: str, unit: str) -> float:
+    """Returns the value entered by the user for the requested measurement and unit.
 
     Parameters
     ----------
 
     measure : name of the resquested mesasurment
+
+    unit: name of the measure unit
 
     Returns
     -------
@@ -112,7 +122,7 @@ def inputSize(measure: str) -> float:
     measurement: value of the measure entered by the user
     """
 
-    inputString = input("Please enter the " + measure + " of the sample (in mm) : ")
+    inputString = input("Please enter the " + measure + " of the sample (in " + unit + ") : ")
     try:
         measurement = float(inputString)
     except ValueError:
@@ -128,7 +138,7 @@ def test():
     print(readCSV("2-SS09_1.csv"))
     df = readCSV("2-SS2209_1.csv", ";")
     print(df)
-    print(inputSize("length"))
-    print(inputSize("width"))
-    print(inputSize("thickness"))
+    print(inputSize("length", "mm"))
+    print(inputSize("width", "mm"))
+    print(inputSize("thickness", "mm"))
 
