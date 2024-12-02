@@ -26,7 +26,7 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
     Returns
     -------
     
-    content : DataFrame containing datas from the csv file.
+    content : DataFrame containing datas from the csv fi    le.
     """
 
     extension = os.path.splitext(path)[1]
@@ -47,7 +47,7 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
         except pd.errors.ParserError:
             print("Parsing error : can't parse the file with the indicated delimiter '" + delimiter +"'. Please choose an other delimiter.")
             content = pd.DataFrame()
-
+    content = content.apply(lambda x: x.str.replace(",", ".") if x.dtype == "object" else x)
     return content
 
 

@@ -9,16 +9,17 @@ This module displays graphs and datas
 import tkinter as tk
 from tkinter import messagebox
 import calculateur as calc
-import input as ip
+import input as ipt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 def draw_figure(canvas, figure, loc=(0, 0)):
     """ Draw a matplotlib figure onto a Tk canvas using FigureCanvasTkAgg """
     figure_canvas = FigureCanvasTkAgg(figure, master=canvas)
     widget = figure_canvas.get_tk_widget()
-    widget.place(x=loc[0], y=loc[1])
+    widget.grid(row = loc[0], column = loc[1])
     figure_canvas.draw()
 
 def click_test():
@@ -36,6 +37,8 @@ def click_test():
     draw_figure(canvas, fig)
 
 def click():
+
+    #Extract the data entered by the user
     try:
         s_thick = float(s_thick_e.get())
         s_length = float(s_length_e.get())
@@ -46,24 +49,52 @@ def click():
 
     path_csv = path_csv_e.get()
 
-    content = ip.readCSV(path_csv, delimiter=";")
+    content = ipt.readCSV(path_csv, delimiter=";")
+    (readable_content, units) = ipt.extractUnits(content)
 
     # Create a canvas in the Tkinter window
     canvas = tk.Canvas(window, width=400, height=300)
     canvas.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
-    # Create the figure to be drawn on the canvas
+    # Create the figures to be drawn on the canvas
     if content is not None:
-        Time = content["Temps"]
-        Displacement = content["Deplacement"]
-        Deformation = content["Deformation"]
-        Strength = content["Force"]
-        fig, ax = plt.subplots(figsize=(4, 3))
-        ax.plot(Time, Displacement)
-        ax.set_title("Dynamic Plot from CSV")
-        ax.set_xlabel("Time (in s)")
-        ax.set_ylabel("Displacement (in mm)")
-        draw_figure(canvas, fig)
+        Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
+        Displacement = pd.to_numeric(readable_content["Deplacement"], errors="coerce")
+        Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
+        Strength = pd.to_numeric(readable_content["Force"], errors="coerce")
+
+        # Graph of the displacement
+        fig, ax = plt.subplots(dpi=62, constrained_layout=True)
+        ax.plot(Time, Displacement, label="Displacement vs Time", color='blue')
+        plt.ylabel("Displacement (mm)")
+        plt.xlabel("Time (s)")
+        plt.title("Displacement of the sample")
+        ax.legend()
+
+        # Show the graph in the window
+        draw_figure(canvas, fig, (7, 0))
+
+        # Graph of the deformation
+        fig, ax = plt.subplots(dpi=62, constrained_layout=True)
+        ax.plot(Time, Deformation, label="Deformation vs Time", color='blue')
+        plt.ylabel("Deformation (%)")
+        plt.xlabel("Time (s)")
+        plt.title("Deformation of the sample")
+        ax.legend()
+
+        # Show the graph in the window
+        draw_figure(canvas, fig, (7, 6))
+
+        # Graph of the strength
+        fig, ax = plt.subplots(dpi=62, constrained_layout=True)
+        ax.plot(Time, Strength, label="Strength vs Time", color='blue')
+        plt.ylabel("Strength (kN)")
+        plt.xlabel("Time (s)")
+        plt.title("Strength applied on the sample")
+        ax.legend()
+
+        # Show the graph in the window
+        draw_figure(canvas, fig, (7,12))
     
 #def window
 window = tk.Tk()
