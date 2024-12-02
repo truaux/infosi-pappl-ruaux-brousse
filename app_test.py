@@ -83,7 +83,7 @@ def click():
         ax.legend()
 
         # Show the graph in the window
-        draw_figure(canvas, fig, (7, 1))
+        draw_figure(canvas, fig, (7, 6))
 
         # Graph of the strength
         fig, ax = plt.subplots(dpi=62, constrained_layout=True)
@@ -94,7 +94,7 @@ def click():
         ax.legend()
 
         # Show the graph in the window
-        draw_figure(canvas, fig, (7,2))
+        draw_figure(canvas, fig, (7,12))
     
 #def window
 window = tk.Tk()
