@@ -1,3 +1,4 @@
+# %%
 # -*- coding: utf-8 -*-
 """
 Created on Fri Nov 15 12:32:27 2024
@@ -9,6 +10,7 @@ This module calculates physical quantities based on datas
 import pandas as pd
 import numpy as np
 import input as ipt
+import matplotlib.pyplot as plt
 
 def derivee(y: list[float], x: list[float]) -> list[float]:
     """Calculates the derivative of points of y with respect to x.
@@ -52,8 +54,11 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     table["Stress"] = table["Force"]/(width * thickness)
     units.append(("Stress", "(Pa)"))
     maxStress = table["Stress"].max()
-    table["dStress"] = derivee(table["Stress"], table["Strain"])
+    table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     E = detConstante(table["dStress"], 5)
+    
+    plt.plot(table["Strain"], table["d2Stress"])
 
     return maxStress, E
 
@@ -63,3 +68,5 @@ df, units = ipt.extractUnits(df)
 df = ipt.dfToFloat(df)
 mxS = Calcul(df, units, 38.4, 4, 6)
 print(df, units, mxS)
+
+# %%
