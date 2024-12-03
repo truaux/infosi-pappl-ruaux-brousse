@@ -19,7 +19,7 @@ import pandas as pd
 def draw_figure(canvas, figure):
     """Draw a matplotlib figure onto a Tk canvas using FigureCanvasTkAgg."""
     figure_canvas = FigureCanvasTkAgg(figure, master=canvas)
-    figure_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    figure_canvas.get_tk_widget().pack(fill="both", expand=True)
     figure_canvas.draw()
 
 def click():
@@ -73,6 +73,25 @@ def click():
             canvas.pack(fill=tk.BOTH, expand=True)
             draw_figure(canvas, fig)
 
+        #Calculate the data
+        Ystress = 0
+        Mstress = 0
+        Uelong = 0
+        Scoef = 0
+        Ymodul = 0
+
+        #Display calculated data
+        fields = [("Yield stress = "+str(Ystress)),
+          ("Stress max = "+str(Mstress)),
+          ("uniform elongation = "+str(Uelong)),
+          ("Striction coefficient = "+str(Scoef)),
+          ("Young's modulus = "+str(Ymodul))]
+
+        entries = {}
+        for i, (label_text) in enumerate(fields):
+            label = tk.Label(tab4, text=label_text, font=("Arial", 10))
+            label.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
+
 
 # Create the main window
 window = tk.Tk()
@@ -106,10 +125,12 @@ tab_control = ttk.Notebook(window)
 tab1 = ttk.Frame(tab_control)
 tab2 = ttk.Frame(tab_control)
 tab3 = ttk.Frame(tab_control)
+tab4 = ttk.Frame(tab_control)
 
 tab_control.add(tab1, text="Displacement")
 tab_control.add(tab2, text="Deformation")
 tab_control.add(tab3, text="Strength")
+tab_control.add(tab4, text="Data calculated")
 
 tab_control.pack(expand=1, fill=tk.BOTH)
 
