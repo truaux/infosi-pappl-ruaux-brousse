@@ -38,6 +38,29 @@ def click():
     (readable_content, units) = ipt.extractUnits(content)
 
     if content is not None:
+
+        #Calculate the data
+        new_readable_content = ipt.dfToFloat(readable_content)
+        results = calc.Calcul(new_readable_content, units, s_length, s_width, s_thick)
+
+        Yield_stress = 0
+        Max_stress = results[0]
+        Uniform_elong = 0
+        Striction_coef = 0
+        Young_modul = results[1]
+
+        #Display calculated data
+        fields = [("Yield stress = "+str(Yield_stress)),
+          ("Stress max = "+str(Max_stress)),
+          ("uniform elongation = "+str(Uniform_elong)),
+          ("Striction coefficient = "+str(Striction_coef)),
+          ("Young's modulus = "+str(Young_modul))]
+
+        entries = {}
+        for i, (label_text) in enumerate(fields):
+            label = tk.Label(tab4, text=label_text, font=("Arial", 10))
+            label.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
+
         Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
         Displacement = pd.to_numeric(readable_content["Deplacement"], errors="coerce")
         Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
@@ -72,25 +95,6 @@ def click():
             canvas = tk.Canvas(tab)
             canvas.pack(fill=tk.BOTH, expand=True)
             draw_figure(canvas, fig)
-
-        #Calculate the data
-        Ystress = 0
-        Mstress = 0
-        Uelong = 0
-        Scoef = 0
-        Ymodul = 0
-
-        #Display calculated data
-        fields = [("Yield stress = "+str(Ystress)),
-          ("Stress max = "+str(Mstress)),
-          ("uniform elongation = "+str(Uelong)),
-          ("Striction coefficient = "+str(Scoef)),
-          ("Young's modulus = "+str(Ymodul))]
-
-        entries = {}
-        for i, (label_text) in enumerate(fields):
-            label = tk.Label(tab4, text=label_text, font=("Arial", 10))
-            label.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
 
 
 # Create the main window
