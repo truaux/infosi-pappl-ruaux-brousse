@@ -60,13 +60,13 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     
     plt.plot(table["Strain"], table["d2Stress"])
 
-    return maxStress, E
+    return (maxStress, E)
 
 
-df = ipt.readCSV("2-SS2209_1.csv", ';')
+"""df = ipt.readCSV("2-SS2209_1.csv", ';')
 df, units = ipt.extractUnits(df)
 df = ipt.dfToFloat(df)
 mxS = Calcul(df, units, 38.4, 4, 6)
-print(df, units, mxS)
+print(df, units, mxS)"""
 
 # %%
