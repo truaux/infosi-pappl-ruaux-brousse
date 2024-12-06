@@ -54,8 +54,8 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     table["Stress"] = table["Force"]/(width * thickness)
     units.append(("Stress", "(Pa)"))
     maxStress = table["Stress"].max()
-    table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
-    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    table["dStress"] = table["Stress"].diff(periods=-1).rolling(10).mean() / table["Strain"].diff(periods=-1).rolling(10).mean()
+    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(10).mean() / table["Strain"].diff(periods=-1).rolling(10).mean()
     E = detConstante(table["dStress"], 5)
     
     plt.plot(table["Strain"], table["d2Stress"])
