@@ -76,6 +76,11 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     #Young's modulus calculation
     table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/(length * 0.001)
     units.append(("Strain", "(%)"))
+    table["Stress"] = table["Force"]/(width * thickness)
+    units.append(("Stress", "(Pa)"))
+    maxStress = table["Stress"].max()
+    table["dStress"] = table["Stress"].diff(periods=-1).rolling(10).mean() / table["Strain"].diff(periods=-1).rolling(10).mean()
+    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(10).mean() / table["Strain"].diff(periods=-1).rolling(10).mean()
     table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     E = detConstante(table["dStress"], 5)
