@@ -49,18 +49,40 @@ def detConstante(curve: list[float], margin: int) -> float:
 
 
 def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: float, thickness: float) -> tuple:
-    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/length
+    
+    #Yield Stress calculation
+    table["dStrength"] = table["Force"].diff(periods=-1).rolling(20).mean() / table["Temps"].diff(periods=-1).rolling(20).mean()
+    table["dStrength_arranged"] = table["dStrength"]
+    #We set the negative values of the derivative to Not a Number object in order to ignore the part of the graphs after the breaking of the system
+    for i in range(table["dStrength"].size) :
+        if table["dStrength_arranged"][i]<0 :
+            table["dStrength_arranged"][i]= np.nan
+    table["d2Strength"] = table["dStrength_arranged"].diff(periods=-1).rolling(20).mean() / table["Temps"].diff(periods=-1).rolling(20).mean()
+    table["d2Strength_avg_1s"] = table["d2Strength"]
+    #We search for the period of the experiment with the most important inflexion through time so we are doing an average of the second derivative on 1s
+    for i in range(table["dStrength_arranged"].size) :
+        if i<(table["dStrength_arranged"].size-10) :
+            table["d2Strength_avg_1s"][i] = table["dStrength_arranged"][i+10] - table["dStrength_arranged"][i]
+    index_period_min = table.loc[table["d2Strength_avg_1s"] == table["d2Strength_avg_1s"].min()].index.item()
+    #When we have the period, we search for the minimum in that period
+    index_min = table.loc[table["d2Strength"][index_period_min:index_period_min+10] == table["d2Strength"].min()].index.item()
+    Yield_stress = table["Force"][index_min]
+
+    #maxStress calculation
+    table["Stress"] = table["Force"]/(width * thickness * 0.000001)
+    units.append(("Stress", "(kPa)"))
+    maxStress = round(table["Stress"].max())
+
+    #Young's modulus calculation
+    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/(length * 0.001)
     units.append(("Strain", "(%)"))
-    table["Stress"] = table["Force"]/(width * thickness)
-    units.append(("Stress", "(Pa)"))
-    maxStress = table["Stress"].max()
     table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     E = detConstante(table["dStress"], 5)
-    
-    plt.plot(table["Strain"], table["d2Stress"])
 
-    return (maxStress, E)
+    
+
+    return (Yield_stress, maxStress, E)
 
 
 """df = ipt.readCSV("2-SS2209_1.csv", ';')

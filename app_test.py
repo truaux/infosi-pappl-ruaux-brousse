@@ -43,18 +43,18 @@ def click():
         new_readable_content = ipt.dfToFloat(readable_content)
         results = calc.Calcul(new_readable_content, units, s_length, s_width, s_thick)
 
-        Yield_stress = 0
-        Max_stress = results[0]
+        Yield_stress = results[0]
+        Max_stress = results[1]
         Uniform_elong = 0
         Striction_coef = 0
-        Young_modul = results[1]
+        Young_modul = results[2]
 
         #Display calculated data
-        fields = [("Yield stress = "+str(Yield_stress)),
-          ("Stress max = "+str(Max_stress)),
-          ("uniform elongation = "+str(Uniform_elong)),
-          ("Striction coefficient = "+str(Striction_coef)),
-          ("Young's modulus = "+str(Young_modul))]
+        fields = [("Yield stress = "+str(Yield_stress)+" kN"),
+          ("Stress max = "+str(Max_stress)+" kPa"),
+          ("uniform elongation = "+str(Uniform_elong)+" %"),
+          ("Striction coefficient = "+str(Striction_coef)+" %"),
+          ("Young's modulus = "+str(Young_modul)+" %")]
 
         entries = {}
         for i, (label_text) in enumerate(fields):
