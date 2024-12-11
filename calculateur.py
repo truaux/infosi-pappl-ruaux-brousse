@@ -50,32 +50,32 @@ def detConstante(curve: list[float], margin: int) -> float:
 
 def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: float, thickness: float) -> tuple:
     
-    #Yield Stress calculation
-    table["dStrength"] = table["Force"].diff(periods=-1).rolling(20).mean() / table["Temps"].diff(periods=-1).rolling(20).mean()
-    table["dStrength_arranged"] = table["dStrength"]
-    #We set the negative values of the derivative to Not a Number object in order to ignore the part of the graphs after the breaking of the system
-    for i in range(table["dStrength"].size) :
-        if table["dStrength_arranged"][i]<0 :
-            table["dStrength_arranged"][i]= np.nan
-    table["d2Strength"] = table["dStrength_arranged"].diff(periods=-1).rolling(20).mean() / table["Temps"].diff(periods=-1).rolling(20).mean()
-    table["d2Strength_avg_1s"] = table["d2Strength"]
-    #We search for the period of the experiment with the most important inflexion through time so we are doing an average of the second derivative on 1s
-    for i in range(table["dStrength_arranged"].size) :
-        if i<(table["dStrength_arranged"].size-10) :
-            table["d2Strength_avg_1s"][i] = table["dStrength_arranged"][i+10] - table["dStrength_arranged"][i]
-    index_period_min = table.loc[table["d2Strength_avg_1s"] == table["d2Strength_avg_1s"].min()].index.item()
-    #When we have the period, we search for the minimum in that period
-    index_min = table.loc[table["d2Strength"][index_period_min:index_period_min+10] == table["d2Strength"].min()].index.item()
-    Yield_stress = table["Force"][index_min]
+    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/(length * 0.001)
+    units.append(("Strain", "(%)"))
 
-    #maxStress calculation
+    #Yield Stress calculation
+    table["dStrength/Strain"] = table["Force"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    table["dStrength/Strain_arranged"] = table["dStrength/Strain"]
+    #We set the negative values of the derivative to Not a Number object in order to ignore the part of the graphs after the breaking of the system
+    for i in range(table["dStrength/Strain"].size) :
+        if table["dStrength/Strain_arranged"][i]<0 :
+            table.loc[i, "dStrength/Strain_arranged"]= np.nan
+    table["d2Strength/Strain"] = table["dStrength/Strain_arranged"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    #We know that the inflexion point we are searching for is located after we pass half of the overall maximum Strength
+    table["d2Strength/Strain_arranged"] = table["d2Strength/Strain"]
+    maxStrength = table["Force"].max()
+    for i in range(table["d2Strength/Strain"].size) :
+        if table["Force"][i]< maxStrength/2:
+            table.loc[i, "d2Strength/Strain_arranged"]= np.nan
+    index_min = table["d2Strength/Strain_arranged"].idxmin()
+    Yield_stress = round(table["Force"][index_min]/(width * thickness * 0.000001))
+
+    #Maximum Stress calculation
     table["Stress"] = table["Force"]/(width * thickness * 0.000001)
     units.append(("Stress", "(kPa)"))
     maxStress = round(table["Stress"].max())
 
     #Young's modulus calculation
-    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/(length * 0.001)
-    units.append(("Strain", "(%)"))
     table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     E = detConstante(table["dStress"], 5)
