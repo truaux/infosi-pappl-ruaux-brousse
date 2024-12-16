@@ -28,6 +28,7 @@ def click():
         s_thick = float(s_thick_e.get())
         s_length = float(s_length_e.get())
         s_width = float(s_width_e.get())
+        s_fsection = float(s_fsection_e.get())
     except ValueError:
         messagebox.showerror("Input Error", "Please enter valid numerical values.")
         return
@@ -41,7 +42,7 @@ def click():
 
         #Calculate the data
         new_readable_content = ipt.dfToFloat(readable_content)
-        results = calc.Calcul(new_readable_content, units, s_length, s_width, s_thick)
+        results = calc.Calcul(new_readable_content, units, s_length, s_width, s_thick, s_fsection)
 
         Yield_stress = results[0]
         Max_stress = results[1]
@@ -118,6 +119,7 @@ input_frame.pack(side=tk.TOP, fill=tk.X)
 fields = [("Sample Thickness (mm)", "s_thick_e"),
           ("Sample Length (mm)", "s_length_e"),
           ("Sample Width (mm)", "s_width_e"),
+          ("Sample Final Section (mm²)", "s_fsection_e"),
           ("Path to CSV File", "path_csv_e")]
 
 entries = {}
@@ -128,7 +130,7 @@ for i, (label_text, var_name) in enumerate(fields):
     entry.grid(row=i, column=1, padx=5, pady=5)
     entries[var_name] = entry
 
-s_thick_e, s_length_e, s_width_e, path_csv_e = [entries[key] for key in entries]
+s_thick_e, s_length_e, s_width_e, s_fsection_e, path_csv_e = [entries[key] for key in entries]
 
 button = tk.Button(input_frame, text="Plot Data", command=click, bg="blue", fg="white", font=("Arial", 10))
 button.grid(row=len(fields), column=0, columnspan=2, pady=10)
