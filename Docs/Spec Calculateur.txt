@@ -7,6 +7,6 @@ sortie :
     - Limite apparente d'élasticité (yield stress) 
     - Résistance à la rupture (stress max)
     - Allongement (uniform elongation)
-    - Coefficient de striction ()
+    - Coefficient de striction (friction's coefficient)
     - Module d'Young (Young's modulus)
 
