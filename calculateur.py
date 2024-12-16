@@ -49,18 +49,40 @@ def detConstante(curve: list[float], margin: int) -> float:
 
 
 def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: float, thickness: float) -> tuple:
-    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/length
-    units.append(("Strain", "(%)"))
-    table["Stress"] = table["Force"]/(width * thickness)
-    units.append(("Stress", "(Pa)"))
-    maxStress = table["Stress"].max()
-    table["dStress"] = table["Stress"].diff(periods=-1).rolling(10).mean() / table["Strain"].diff(periods=-1).rolling(10).mean()
-    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(10).mean() / table["Strain"].diff(periods=-1).rolling(10).mean()
-    E = detConstante(table["dStress"], 5)
     
-    plt.plot(table["Strain"], table["d2Stress"])
+    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/(length * 0.001)
+    units.append(("Strain", "(%)"))
 
-    return (maxStress, E)
+    #Yield Stress calculation
+    table["dStrength/Strain"] = table["Force"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    table["dStrength/Strain_arranged"] = table["dStrength/Strain"]
+    #We set the negative values of the derivative to Not a Number object in order to ignore the part of the graphs after the breaking of the system
+    for i in range(table["dStrength/Strain"].size) :
+        if table["dStrength/Strain_arranged"][i]<0 :
+            table.loc[i, "dStrength/Strain_arranged"]= np.nan
+    table["d2Strength/Strain"] = table["dStrength/Strain_arranged"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    #We know that the inflexion point we are searching for is located after we pass half of the overall maximum Strength
+    table["d2Strength/Strain_arranged"] = table["d2Strength/Strain"]
+    maxStrength = table["Force"].max()
+    for i in range(table["d2Strength/Strain"].size) :
+        if table["Force"][i]< maxStrength/2:
+            table.loc[i, "d2Strength/Strain_arranged"]= np.nan
+    index_min = table["d2Strength/Strain_arranged"].idxmin()
+    Yield_stress = round(table["Force"][index_min]/(width * thickness * 0.000001))
+
+    #Maximum Stress calculation
+    table["Stress"] = table["Force"]/(width * thickness * 0.000001)
+    units.append(("Stress", "(kPa)"))
+    maxStress = round(table["Stress"].max())
+
+    #Young's modulus calculation
+    table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    E = detConstante(table["dStress"], 5)
+
+    
+
+    return (Yield_stress, maxStress, E)
 
 
 """df = ipt.readCSV("2-SS2209_1.csv", ';')

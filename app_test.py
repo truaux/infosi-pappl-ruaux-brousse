@@ -43,28 +43,29 @@ def click():
         new_readable_content = ipt.dfToFloat(readable_content)
         results = calc.Calcul(new_readable_content, units, s_length, s_width, s_thick)
 
-        Yield_stress = 0
-        Max_stress = results[0]
+        Yield_stress = results[0]
+        Max_stress = results[1]
         Uniform_elong = 0
         Striction_coef = 0
-        Young_modul = results[1]
+        Young_modul = results[2]
 
         #Display calculated data
-        fields = [("Yield stress = "+str(Yield_stress)),
-          ("Stress max = "+str(Max_stress)),
-          ("uniform elongation = "+str(Uniform_elong)),
-          ("Striction coefficient = "+str(Striction_coef)),
-          ("Young's modulus = "+str(Young_modul))]
+        fields = [("Yield stress = "+str(Yield_stress)+" kPa"),
+          ("Stress max = "+str(Max_stress)+" kPa"),
+          ("uniform elongation = "+str(Uniform_elong)+" %"),
+          ("Striction coefficient = "+str(Striction_coef)+" %"),
+          ("Young's modulus = "+str(Young_modul)+" %")]
 
         entries = {}
         for i, (label_text) in enumerate(fields):
-            label = tk.Label(tab4, text=label_text, font=("Arial", 10))
+            label = tk.Label(tab5, text=label_text, font=("Arial", 10))
             label.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
 
         Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
         Displacement = pd.to_numeric(readable_content["Deplacement"], errors="coerce")
         Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
         Strength = pd.to_numeric(readable_content["Force"], errors="coerce")
+        Strain = pd.to_numeric(new_readable_content["Strain"], errors="coerce")
 
         # Graph of displacement
         fig1, ax1 = plt.subplots(dpi=100, constrained_layout=True)
@@ -90,8 +91,16 @@ def click():
         ax3.set_title("Strength Applied on the Sample")
         ax3.legend()
 
+        # Graph of strength over strain
+        fig4, ax4 = plt.subplots(dpi=100, constrained_layout=True)
+        ax4.plot(Strain, Strength, label="Strength vs Strain", color='red')
+        ax4.set_ylabel("Strength (kN)")
+        ax4.set_xlabel("Strain (%)")
+        ax4.set_title("Strength Applied on the Sample over Strain")
+        ax4.legend()
+
         # Display graphs in tabs
-        for tab, fig in zip([tab1, tab2, tab3], [fig1, fig2, fig3]):
+        for tab, fig in zip([tab1, tab2, tab3, tab4], [fig1, fig2, fig3, fig4]):
             canvas = tk.Canvas(tab)
             canvas.pack(fill=tk.BOTH, expand=True)
             draw_figure(canvas, fig)
@@ -130,11 +139,13 @@ tab1 = ttk.Frame(tab_control)
 tab2 = ttk.Frame(tab_control)
 tab3 = ttk.Frame(tab_control)
 tab4 = ttk.Frame(tab_control)
+tab5 = ttk.Frame(tab_control)
 
 tab_control.add(tab1, text="Displacement")
 tab_control.add(tab2, text="Deformation")
 tab_control.add(tab3, text="Strength")
-tab_control.add(tab4, text="Data calculated")
+tab_control.add(tab4, text="Strength/Strain")
+tab_control.add(tab5, text="Data calculated")
 
 tab_control.pack(expand=1, fill=tk.BOTH)
 

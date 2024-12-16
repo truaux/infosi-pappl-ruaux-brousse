@@ -8,6 +8,5 @@ sortie :
     - Résistance à la rupture (stress max)
     - Allongement (uniform elongation)
     - Coefficient de striction ()
-    - Module d'élasticité longitudinale
     - Module d'Young (Young's modulus)
 
