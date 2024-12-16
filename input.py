@@ -74,7 +74,6 @@ def dfToFloat(table: pd.DataFrame) -> pd.DataFrame:
             except ValueError:
                 print("Some values aren't float.")
                 print(value)
-                stop
             finally :
                 table.loc[i, column] = value
     table = table.astype(float)
