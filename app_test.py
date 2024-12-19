@@ -15,13 +15,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-
-def draw_figure(canvas, figure):
-    """Draw a matplotlib figure onto a Tk canvas using FigureCanvasTkAgg."""
-    figure_canvas = FigureCanvasTkAgg(figure, master=canvas)
-    figure_canvas.get_tk_widget().pack(fill="both", expand=True)
-    figure_canvas.draw()
-
 def click():
     # Extract the data entered by the user
     try:
@@ -50,62 +43,44 @@ def click():
         Striction_coef = 0
         Young_modul = results[2]
 
-        #Display calculated data
-        fields = [("Yield stress = "+str(Yield_stress)+" kPa"),
-          ("Stress max = "+str(Max_stress)+" kPa"),
-          ("uniform elongation = "+str(Uniform_elong)+" %"),
-          ("Striction coefficient = "+str(Striction_coef)+" %"),
-          ("Young's modulus = "+str(Young_modul)+" %")]
-
-        entries = {}
-        for i, (label_text) in enumerate(fields):
-            label = tk.Label(tab5, text=label_text, font=("Arial", 10))
-            label.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
-
+        # Update graphs dynamically
         Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
         Displacement = pd.to_numeric(readable_content["Deplacement"], errors="coerce")
         Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
         Strength = pd.to_numeric(readable_content["Force"], errors="coerce")
         Strain = pd.to_numeric(new_readable_content["Strain"], errors="coerce")
 
-        # Graph of displacement
-        fig1, ax1 = plt.subplots(dpi=100, constrained_layout=True)
-        ax1.plot(Time, Displacement, label="Displacement vs Time", color='blue')
-        ax1.set_ylabel("Displacement (mm)")
-        ax1.set_xlabel("Time (s)")
-        ax1.set_title("Displacement of the Sample")
-        ax1.legend()
+        ax1.plot(Time, Displacement, label=f"Run {len(ax1.lines)+1}")
+        ax2.plot(Time, Deformation, label=f"Run {len(ax2.lines)+1}")
+        ax3.plot(Time, Strength, label=f"Run {len(ax3.lines)+1}")
+        ax4.plot(Strain, Strength, label=f"Run {len(ax4.lines)+1}")
 
-        # Graph of deformation
-        fig2, ax2 = plt.subplots(dpi=100, constrained_layout=True)
-        ax2.plot(Time, Deformation, label="Deformation vs Time", color='green')
-        ax2.set_ylabel("Deformation (%)")
-        ax2.set_xlabel("Time (s)")
-        ax2.set_title("Deformation of the Sample")
-        ax2.legend()
+        for ax in [ax1, ax2, ax3, ax4]:
+            ax.legend()
 
-        # Graph of strength
-        fig3, ax3 = plt.subplots(dpi=100, constrained_layout=True)
-        ax3.plot(Time, Strength, label="Strength vs Time", color='red')
-        ax3.set_ylabel("Strength (kN)")
-        ax3.set_xlabel("Time (s)")
-        ax3.set_title("Strength Applied on the Sample")
-        ax3.legend()
+        # Refresh the canvases
+        canvas1.draw()
+        canvas2.draw()
+        canvas3.draw()
+        canvas4.draw()
 
-        # Graph of strength over strain
-        fig4, ax4 = plt.subplots(dpi=100, constrained_layout=True)
-        ax4.plot(Strain, Strength, label="Strength vs Strain", color='red')
-        ax4.set_ylabel("Strength (kN)")
-        ax4.set_xlabel("Strain (%)")
-        ax4.set_title("Strength Applied on the Sample over Strain")
-        ax4.legend()
+        # Update the table in tab5
+        if not hasattr(click, "treeview"):
+            # Create the table only the first time
+            columns = ("Set of data n°","Yield Stress (kPa)", "Max Stress (kPa)", "Uniform Elongation (%)", "Striction Coefficient (%)", "Young's Modulus (%)")
+            click.treeview = ttk.Treeview(tab5, columns=columns, show="headings")
+            for col in columns:
+                click.treeview.heading(col, text=col)
+                click.treeview.column(col, width=150, anchor="center")
+            click.treeview.pack(fill=tk.BOTH, expand=True)
+            # Initialize a counter for the number of runs
+            click.run_counter = 0
 
-        # Display graphs in tabs
-        for tab, fig in zip([tab1, tab2, tab3, tab4], [fig1, fig2, fig3, fig4]):
-            canvas = tk.Canvas(tab)
-            canvas.pack(fill=tk.BOTH, expand=True)
-            draw_figure(canvas, fig)
+        # Increment the run counter
+        click.run_counter += 1
 
+        # Insert new data as a row
+        click.treeview.insert("", "end", values=(click.run_counter, Yield_stress, Max_stress, Uniform_elong, Striction_coef, Young_modul))
 
 # Create the main window
 window = tk.Tk()
@@ -135,6 +110,12 @@ s_thick_e, s_length_e, s_width_e, s_fsection_e, path_csv_e = [entries[key] for k
 button = tk.Button(input_frame, text="Plot Data", command=click, bg="blue", fg="white", font=("Arial", 10))
 button.grid(row=len(fields), column=0, columnspan=2, pady=10)
 
+# Create figures and axes outside of the click function
+fig1, ax1 = plt.subplots(dpi=100, constrained_layout=True)
+fig2, ax2 = plt.subplots(dpi=100, constrained_layout=True)
+fig3, ax3 = plt.subplots(dpi=100, constrained_layout=True)
+fig4, ax4 = plt.subplots(dpi=100, constrained_layout=True)
+
 # Tabbed Graph Display
 tab_control = ttk.Notebook(window)
 tab1 = ttk.Frame(tab_control)
@@ -150,5 +131,15 @@ tab_control.add(tab4, text="Strength/Strain")
 tab_control.add(tab5, text="Data calculated")
 
 tab_control.pack(expand=1, fill=tk.BOTH)
+
+# Create Canvas for each tab
+canvas1 = FigureCanvasTkAgg(fig1, master=tab1)
+canvas1.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+canvas2 = FigureCanvasTkAgg(fig2, master=tab2)
+canvas2.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+canvas3 = FigureCanvasTkAgg(fig3, master=tab3)
+canvas3.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+canvas4 = FigureCanvasTkAgg(fig4, master=tab4)
+canvas4.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
 window.mainloop()
