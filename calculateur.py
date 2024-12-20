@@ -73,6 +73,10 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     units.append(("Stress", "(kPa)"))
     maxStress = round(table["Stress"].max())
 
+    #Uniform Elongation calculation
+    #For this part we should use the formula on the website https://www.rocdacier.com/essai-de-traction-2/ :
+    #Module d’élasticité longitudinale (%) : E =F0xL0/S0xDeltaL (avec DeltaL = L-L0)
+
     #Striction's coefficient calculation
     Z = round((thickness * width - finalSection) / (thickness * width) * 100)
 
