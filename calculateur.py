@@ -85,9 +85,6 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     stress_subset = table["Stress"].iloc[:index_min + 1]
     strain_subset = table["Strain"].iloc[:index_min + 1]
     
-    print("Stress subset:", stress_subset.tolist())
-    print("Strain subset:", strain_subset.tolist())
-
     if len(stress_subset) < 2 or len(strain_subset) < 2:
         raise ValueError("Insufficient data for linear regression.")
     #We are doing a linear regression on it
