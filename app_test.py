@@ -40,8 +40,8 @@ def click():
         Yield_stress = results[0]
         Max_stress = results[1]
         Uniform_elong = 0
-        Striction_coef = 0
-        Young_modul = results[2]
+        Striction_coef = results[2]
+        Young_modul = results[3]
 
         # Update graphs dynamically
         Time = pd.to_numeric(readable_content["Temps"], errors="coerce")
@@ -88,7 +88,7 @@ def click():
         # Update the table in tab5
         if not hasattr(click, "treeview"):
             # Create the table only the first time
-            columns = ("Set of data n°","Yield Stress (kPa)", "Max Stress (kPa)", "Uniform Elongation (%)", "Striction Coefficient (%)", "Young's Modulus (%)")
+            columns = ("Set of data n°","Yield Stress Re (kPa)", "Max Stress Rm (kPa)", "Uniform Elongation (%)", "Striction Coefficient Z% (%)", "Young's Modulus E (%)")
             click.treeview = ttk.Treeview(tab5, columns=columns, show="headings")
             for col in columns:
                 click.treeview.heading(col, text=col)
@@ -133,9 +133,13 @@ button.grid(row=len(fields), column=0, columnspan=2, pady=10)
 
 # Create figures and axes outside of the click function
 fig1, ax1 = plt.subplots(dpi=100, constrained_layout=True)
+ax1.grid()
 fig2, ax2 = plt.subplots(dpi=100, constrained_layout=True)
+ax2.grid()
 fig3, ax3 = plt.subplots(dpi=100, constrained_layout=True)
+ax3.grid()
 fig4, ax4 = plt.subplots(dpi=100, constrained_layout=True)
+ax4.grid()
 
 # Tabbed Graph Display
 tab_control = ttk.Notebook(window)

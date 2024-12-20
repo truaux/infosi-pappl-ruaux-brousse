@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import input as ipt
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 def derivee(y: list[float], x: list[float]) -> list[float]:
     """Calculates the derivative of points of y with respect to x.
@@ -45,11 +46,9 @@ def detConstante(curve: list[float], margin: int) -> float:
         i += 1
     return np.around(np.mean(curve[:i]), 2)
 
-
-
 def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: float, thickness: float, finalSection: float) -> tuple:
     
-    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/(length * 0.001)
+    table["Strain"] = (table["Deplacement"] - table["Deplacement"][0])/length
     units.append(("Strain", "(%)"))
 
     #Yield Stress calculation
@@ -74,15 +73,24 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     units.append(("Stress", "(kPa)"))
     maxStress = round(table["Stress"].max())
 
-    #Young's modulus calculation
-    table["dStress"] = table["Stress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
-    table["d2Stress"] = table["dStress"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
-    E = detConstante(table["dStress"], 5)
+    #Striction's coefficient calculation
+    Z = round((thickness * width - finalSection) / (thickness * width) * 100)
 
-    #Friction's coefficient calculation
-    Z = (finalSection - thickness * width) / (thickness * width) * 100
+    #Young's modulus calculation
+    #We are using only the part of the curve before Re is reached
+    stress_subset = table["Stress"].iloc[:index_min + 1]
+    strain_subset = table["Strain"].iloc[:index_min + 1]
     
-    return (Yield_stress, maxStress, E, Z)
+    print("Stress subset:", stress_subset.tolist())
+    print("Strain subset:", strain_subset.tolist())
+
+    if len(stress_subset) < 2 or len(strain_subset) < 2:
+        raise ValueError("Insufficient data for linear regression.")
+    #We are doing a linear regression on it
+    slope, intercept, r_value, p_value, std_err = linregress(strain_subset, stress_subset)
+    E = round(slope)
+    
+    return (Yield_stress, maxStress, Z, E)
 
 
 """df = ipt.readCSV("2-SS2209_1.csv", ';')
