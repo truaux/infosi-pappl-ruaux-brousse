@@ -14,6 +14,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import os
 
 def click():
     # Extract the data entered by the user
@@ -104,6 +105,16 @@ def click():
         # Insert new data as a row
         click.treeview.insert("", "end", values=(click.run_counter, Yield_stress, Max_stress, Uniform_elong, Striction_coef, Young_modul))
 
+def browse_file():
+    file_path = tk.filedialog.askopenfilename(
+        title="Select a CSV file",
+        filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+    )
+    if file_path:
+        file_name = os.path.basename(file_path)  # Extract file name from the path
+        path_csv_e.delete(0, tk.END)
+        path_csv_e.insert(0, file_name)  # Display only the file name
+        
 # Create the main window
 window = tk.Tk()
 window.title("Traction Analyzer")
@@ -126,6 +137,11 @@ for i, (label_text, var_name) in enumerate(fields):
     entry = tk.Entry(input_frame, width=30)
     entry.grid(row=i, column=1, padx=5, pady=5)
     entries[var_name] = entry
+
+# Add a browse button to select the csv file
+path_csv_e = entries["path_csv_e"]
+browse_button = tk.Button(input_frame, text="Browse", command=browse_file, font=("Arial", 10))
+browse_button.grid(row=len(fields) - 1, column=2, padx=5, pady=5)
 
 s_thick_e, s_length_e, s_width_e, s_fsection_e, path_csv_e = [entries[key] for key in entries]
 
