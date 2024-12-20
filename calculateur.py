@@ -8,43 +8,8 @@ This module calculates physical quantities based on datas
 
 import pandas as pd
 import numpy as np
-import input as ipt
-import matplotlib.pyplot as plt
 from scipy.stats import linregress
 
-def derivee(y: list[float], x: list[float]) -> list[float]:
-    """Calculates the derivative of points of y with respect to x.
-
-    Parameters
-    ----------
-
-    y : List of points to derive.
-
-    x : List of points relative to which the derivative is calculated.
-
-    Returns
-    -------
-
-    d : List of derived points.
-    """ 
-
-    d = []
-    for i in range(0, len(y)-1):
-        dy = y[i+1]-y[i]
-        dx = x[i+1]-x[i]
-        d.append(dy/dx)
-    d.append(0)
-
-    return d
-
-
-def detConstante(curve: list[float], margin: int) -> float:
-    start = curve[0]
-    interval = margin * start / 100
-    i = 0
-    while curve[i] < start + interval:
-        i += 1
-    return np.around(np.mean(curve[:i]), 2)
 
 def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: float, thickness: float, finalSection: float) -> tuple:
     
@@ -76,6 +41,8 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     #Uniform Elongation calculation
     #For this part we should use the formula on the website https://www.rocdacier.com/essai-de-traction-2/ :
     #Module d’élasticité longitudinale (%) : E =F0xL0/S0xDeltaL (avec DeltaL = L-L0)
+    UE = round(table["Force"].iloc[index_min] * length / (width * thickness * (table["Deplacement"].iloc[index_min] - table["Deplacement"].iloc[0])), 2)
+    units.append(("Uniform Elongation", "(%)"))
 
     #Striction's coefficient calculation
     Z = round((thickness * width - finalSection) / (thickness * width) * 100)
@@ -91,7 +58,7 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     slope, intercept, r_value, p_value, std_err = linregress(strain_subset, stress_subset)
     E = round(slope)
     
-    return (Yield_stress, maxStress, Z, E)
+    return (Yield_stress, maxStress, Z, E, UE)
 
 
 """df = ipt.readCSV("2-SS2209_1.csv", ';')

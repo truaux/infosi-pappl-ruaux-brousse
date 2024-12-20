@@ -41,7 +41,7 @@ def click():
 
         Yield_stress = results[0]
         Max_stress = results[1]
-        Uniform_elong = 0
+        Uniform_elong = results[4]
         Striction_coef = results[2]
         Young_modul = results[3]
 
@@ -90,7 +90,7 @@ def click():
         # Update the table in tab5
         if not hasattr(click, "treeview"):
             # Create the table only the first time
-            columns = ("Set of data n°","Yield Stress Re (kPa)", "Max Stress Rm (kPa)", "Uniform Elongation ()", "Striction Coefficient Z% (%)", "Young's Modulus E (kPa)")
+            columns = ("Set of data n°","Yield Stress Re (kPa)", "Max Stress Rm (kPa)", "Uniform Elongation (%)", "Striction Coefficient Z% (%)", "Young's Modulus E (kPa)")
             click.treeview = ttk.Treeview(tab5, columns=columns, show="headings")
             for col in columns:
                 click.treeview.heading(col, text=col)
