@@ -30,6 +30,7 @@ def click():
 
     content = ipt.readCSV(path_csv, delimiter=";")
     (readable_content, units) = ipt.extractUnits(content)
+    readable_content = ipt.dfToFloat(readable_content)
 
     if content is not None:
 

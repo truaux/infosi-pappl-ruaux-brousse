@@ -26,7 +26,7 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
     Returns
     -------
     
-    content : DataFrame containing datas from the csv fi    le.
+    content : DataFrame containing datas from the csv file.
     """
 
     extension = os.path.splitext(path)[1]
@@ -47,7 +47,6 @@ def readCSV(path: str, delimiter: str =",") -> pd.DataFrame:
         except pd.errors.ParserError:
             print("Parsing error : can't parse the file with the indicated delimiter '" + delimiter +"'. Please choose an other delimiter.")
             content = pd.DataFrame()
-    content = content.apply(lambda x: x.str.replace(",", ".") if x.dtype == "object" else x)
     return content
 
 
@@ -67,13 +66,12 @@ def dfToFloat(table: pd.DataFrame) -> pd.DataFrame:
     
     for column in table:
         for i in range(0, len(table[column])):
-            value = table[column][i]
+            value = str(table[column][i])
             try:
                 value = value.replace(",", ".")
                 value = float(value)
             except ValueError:
                 print("Some values aren't float.")
-                print(value)
             finally :
                 table.loc[i, column] = value
     table = table.astype(float)
@@ -137,7 +135,3 @@ def test():
     print(readCSV("2-SS09_1.csv"))
     df = readCSV("2-SS2209_1.csv", ";")
     print(df)
-    print(inputSize("length", "mm"))
-    print(inputSize("width", "mm"))
-    print(inputSize("thickness", "mm"))
-
