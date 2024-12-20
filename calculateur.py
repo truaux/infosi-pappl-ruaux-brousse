@@ -19,11 +19,13 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     #Yield Stress calculation
     table["dStrength/Strain"] = table["Force"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
     table["dStrength/Strain_arranged"] = table["dStrength/Strain"]
+    
     #We set the negative values of the derivative to Not a Number object in order to ignore the part of the graphs after the breaking of the system
     for i in range(table["dStrength/Strain"].size) :
         if table["dStrength/Strain_arranged"][i]<0 :
             table.loc[i, "dStrength/Strain_arranged"]= np.nan
     table["d2Strength/Strain"] = table["dStrength/Strain_arranged"].diff(periods=-1).rolling(20).mean() / table["Strain"].diff(periods=-1).rolling(20).mean()
+    
     #We know that the inflexion point we are searching for is located after we pass half of the overall maximum Strength
     table["d2Strength/Strain_arranged"] = table["d2Strength/Strain"]
     maxStrength = table["Force"].max()
@@ -59,10 +61,3 @@ def Calcul(table: pd.DataFrame, units: list[(str, str)], length: float, width: f
     E = round(slope)
     
     return (Yield_stress, maxStress, Z, E, UE)
-
-
-"""df = ipt.readCSV("2-SS2209_1.csv", ';')
-df, units = ipt.extractUnits(df)
-df = ipt.dfToFloat(df)
-mxS = Calcul(df, units, 38.4, 4, 6)
-print(df, units, mxS)"""

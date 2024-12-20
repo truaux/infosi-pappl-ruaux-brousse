@@ -102,36 +102,3 @@ def extractUnits(table: pd.DataFrame) -> (pd.DataFrame, list[(str, str)]):
     
     return table, units
 
-
-def inputSize(measure: str, unit: str) -> float:
-    """Returns the value entered by the user for the requested measurement and unit.
-
-    Parameters
-    ----------
-
-    measure : name of the resquested mesasurment
-
-    unit: name of the measure unit
-
-    Returns
-    -------
-
-    measurement: value of the measure entered by the user
-    """
-
-    inputString = input("Please enter the " + measure + " of the sample (in " + unit + ") : ")
-    try:
-        measurement = float(inputString)
-    except ValueError:
-        print("ValueError : Please make sure that your entry is a float.")
-        inputSize(measure)
-    else:
-        return measurement
-
-
-def test():
-    print(readCSV("2-SS2209_1.csv"))
-    print(readCSV("2-SS2209_1.pdf"))
-    print(readCSV("2-SS09_1.csv"))
-    df = readCSV("2-SS2209_1.csv", ";")
-    print(df)

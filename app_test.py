@@ -12,7 +12,6 @@ import calculateur as calc
 import input as ipt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import os
 
@@ -54,7 +53,6 @@ def click():
         Stress = pd.to_numeric(new_readable_content["Stress"], errors="coerce")
 
         # Add new curves with unique labels
-        run_number = len(ax1.lines) + 1
         ax1.plot(Time, Deformation, label=f"Run {len(ax1.lines)+1}")
         ax2.plot(Displacement, Strength, label=f"Run {len(ax2.lines)+1}")
         ax3.plot(Strain, Strength, label=f"Run {len(ax3.lines)+1}")
