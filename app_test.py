@@ -49,14 +49,35 @@ def click():
         Deformation = pd.to_numeric(readable_content["Deformation 1"], errors="coerce")
         Strength = pd.to_numeric(readable_content["Force"], errors="coerce")
         Strain = pd.to_numeric(new_readable_content["Strain"], errors="coerce")
+        Stress = pd.to_numeric(new_readable_content["Stress"], errors="coerce")
 
-        ax1.plot(Time, Displacement, label=f"Run {len(ax1.lines)+1}")
-        ax2.plot(Time, Deformation, label=f"Run {len(ax2.lines)+1}")
-        ax3.plot(Time, Strength, label=f"Run {len(ax3.lines)+1}")
-        ax4.plot(Strain, Strength, label=f"Run {len(ax4.lines)+1}")
+        # Add new curves with unique labels
+        run_number = len(ax1.lines) + 1
+        ax1.plot(Time, Deformation, label=f"Run {len(ax1.lines)+1}")
+        ax2.plot(Displacement, Strength, label=f"Run {len(ax2.lines)+1}")
+        ax3.plot(Strain, Strength, label=f"Run {len(ax3.lines)+1}")
+        ax4.plot(Strain, Stress, label=f"Run {len(ax4.lines)+1}")
 
+        # Set axis labels and titles for all graphs
+        ax1.set_xlabel("Time (s)")
+        ax1.set_ylabel("Deformation (%)")
+        ax1.set_title("Deformation vs. Time")
+
+        ax2.set_xlabel("Displacement (mm))")
+        ax2.set_ylabel("Strength (kN)")
+        ax2.set_title("Strength vs. Displacement")
+
+        ax3.set_xlabel("Strain (%)")
+        ax3.set_ylabel("Strength (kN)")
+        ax3.set_title("Strength vs. Strain")
+
+        ax4.set_xlabel("Strain (%)")
+        ax4.set_ylabel("Stress (kPa)")
+        ax4.set_title("Stress vs. Strain")
+
+        # Update legends for all axes
         for ax in [ax1, ax2, ax3, ax4]:
-            ax.legend()
+            ax.legend(loc="best", fontsize="small", title="Legend")
 
         # Refresh the canvases
         canvas1.draw()
@@ -124,10 +145,10 @@ tab3 = ttk.Frame(tab_control)
 tab4 = ttk.Frame(tab_control)
 tab5 = ttk.Frame(tab_control)
 
-tab_control.add(tab1, text="Displacement")
-tab_control.add(tab2, text="Deformation")
-tab_control.add(tab3, text="Strength")
-tab_control.add(tab4, text="Strength/Strain")
+tab_control.add(tab1, text="Deformation")
+tab_control.add(tab2, text="Strength/Displacement")
+tab_control.add(tab3, text="Strength/Strain")
+tab_control.add(tab4, text="Stress/Strain")
 tab_control.add(tab5, text="Data calculated")
 
 tab_control.pack(expand=1, fill=tk.BOTH)
