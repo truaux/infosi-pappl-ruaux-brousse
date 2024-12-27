@@ -109,9 +109,8 @@ def browse_file():
         filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
     )
     if file_path:
-        file_name = os.path.basename(file_path)  # Extract file name from the path
         path_csv_e.delete(0, tk.END)
-        path_csv_e.insert(0, file_name)  # Display only the file name
+        path_csv_e.insert(0, file_path)  # Display the file name
         
 # Create the main window
 window = tk.Tk()
