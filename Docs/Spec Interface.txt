@@ -1,0 +1,7 @@
+Specification du fonctionnement de l'interface
+
+aucune entree et sortie
+
+fonctionnement : recuperation des donnees entrees par l'utilisateur et envoie de ces donnees
+a input (voir spec input) et au calculateur (voir spec calculateur) puis affichage des 
+sorties et des graphiques souhaites.
